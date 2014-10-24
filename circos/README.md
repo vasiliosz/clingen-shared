@@ -25,7 +25,7 @@ Export the `/path/to/circos/bin` to your `$PATH`
 
 ***
 
-To run example templates
+## To run example templates
 
 ```
 cd circos-template
