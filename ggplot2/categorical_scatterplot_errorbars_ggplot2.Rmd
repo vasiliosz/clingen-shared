@@ -22,10 +22,12 @@ With few data points and different number of individuals per group, I think the 
 library(ggplot2)
 #Found here:http://sharpstatistics.co.uk/r/ggplot2-guide/
 
+#calculate the mean+-SD (the ymin is ==0 if mean-sd<0 and negative values make no sense)
 myFunc = function(x) {
-  result = c(mean(x) - sd(x), mean(x) + sd(x))
-  names(result) = c("ymin", "ymax")
-  result
+result = c(mean(x) - sd(x), mean(x) + sd(x))
+if (result[1]<0){result[1]=0}
+names(result) = c("ymin", "ymax")
+result
 }
 
 theme_set(theme_bw())
