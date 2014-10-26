@@ -1,0 +1,49 @@
+---
+title: "How to: scatterplot by category with mean and SD shown (ggplot2)"
+author: "Bianca Tesi"
+date: "26 Oct 2014"
+output: html_document
+---
+
+How to: \
+1. make a scatteplot for different categories (sometimes it is better than a box plot) \
+2. show the mean value \
+3. show +- SD as error bars \
+4. all in ggplot2 \
+\
+ 
+You may have to reshape your table with reshape2
+
+
+```{r}
+library(ggplot2)
+#Found here:http://sharpstatistics.co.uk/r/ggplot2-guide/
+
+myFunc = function(x) {
+  result = c(mean(x) - sd(x), mean(x) + sd(x))
+  names(result) = c("ymin", "ymax")
+  result
+}
+
+theme_set(theme_bw())
+g <- ggplot(iris, aes(Species, Sepal.Length)) + xlab("Groups") + ylab("Value")
+g = g + geom_jitter(position=position_jitter(width=0.25))  
+g = g + stat_summary(fun.data = "myFunc", geom = "errorbar", width = 0.5, size=0.5) 
+g = g + stat_summary(fun.y=mean,fun.ymin = mean, fun.ymax = mean, geom="crossbar", size = 0.3, width=0.5) 
+g
+
+
+```
+
+If you'd like to display a different order than the one default:
+
+```{r}
+g <- ggplot(iris, aes(factor((Species),levels=c("versicolor", "virginica", "setosa")), Sepal.Length)) + xlab("Groups") + ylab("Value")
+g = g + geom_jitter(position=position_jitter(width=0.25))  
+g = g + stat_summary(fun.data = "myFunc", geom = "errorbar", width = 0.5, size=0.5) 
+g = g + stat_summary(fun.y=mean,fun.ymin = mean, fun.ymax = mean, geom="crossbar", size = 0.3, width=0.5) 
+g
+
+```
+
+
