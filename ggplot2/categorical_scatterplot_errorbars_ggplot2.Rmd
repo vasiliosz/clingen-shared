@@ -14,6 +14,9 @@ How to: \
  
 You may have to reshape your table with reshape2
 
+My use case was to plot the level of NK cells cytotoxic activity in two group of patients (and also of their parents and experimental controls, 6 categories in total, with different number of individuals for each category).
+With few data points and different number of individuals per group, I think the "categorical scatterplot" is more informative than a box plot or bar plot. 
+
 
 ```{r}
 library(ggplot2)
