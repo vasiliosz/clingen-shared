@@ -2,5 +2,7 @@
 circos/circos-synall1/
 *.html
 *.zip
-circos/circos-matepair-fusions/circos-matepair/data/
+circos/circos-matepair-fusions/circos-matepair/data/annotation/
+circos/circos-matepair-fusions/circos-matepair/data/fusion/
+circos/circos-matepair-fusions/circos-matepair/data/cnv/
 circos/circos-matepair-fusions/csvlists-leukemia/

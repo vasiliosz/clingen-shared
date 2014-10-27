@@ -7,19 +7,20 @@ Created 141026
 ./parse-folder.sh [csv-lists-folder] [circos-folder] [plot: default is TRUE]
 ```
 
-`parse-folder.sh` calls two scripts underneath:
+`parse-folder.sh` calls two scripts underneath
+
 * `transloc-to-fusion-links.sh`
 * `transloc-to-gene-highlights.sh`
 
 *Dependencies*
-1. Circos needs to be in path (see main level readme in this repository for instructions)
+
+1. Circos needs to be in path (see main Circos readme in this repository for instructions)
 2. UCSCtoHGNCsymbols-hg19.txt (included)
 
 ***
 
 The input csv-lists are in format: `[SAMPLE_ID]_[inter|intra]*.csv`
 ```
-# Example CSV input list (SAMPLE_ID_inter_*.csv)
 #Occ	chrA	startOnA	endOnA	chrB	startOnB	endOnB	LinksFromWindow	LinksToChrB	LinksToEvent	CoverageOnChrA	OrientationA	OrientationB	FeatureA	FeatureB
 1	chr12	12026027	12030043	chr21	36263639	36267964	31	11	11	1.5295	- (100%)	- (100%)	gene_uc001qzz.3	gene_uc010gmu.3
 2	chr12	43896870	43901676	chr21	36268332	36271647	19	9	9	2.03599	- (100%)	+ (100%)	gene_uc010skx.2	gene_uc010gmu.3
@@ -27,4 +28,4 @@ The input csv-lists are in format: `[SAMPLE_ID]_[inter|intra]*.csv`
 4	chr3	34249621	34250699	chr15	45080160	45091563	19	11	11	2.95551	+ (63%)	+ (63%)	rmsk_LTR	rmsk_LINE
 ```
 
-Only one example csv is included in the repo, the rest are available via Uppmax.
+Only one example csv is included in the repo, the rest are available via Uppmax or shared directly.
