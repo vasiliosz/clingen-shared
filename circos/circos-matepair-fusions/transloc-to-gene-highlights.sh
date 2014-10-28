@@ -18,10 +18,16 @@ awk -F '\t' 'NR>1 && FNR==NR{
 };
 NR>1 && length($2)<6 && length($5)<6{
  OFS="\t";
- if($14~/gene/ && $15~/gene/){
+ if($14~/gene/){
    gsub(/gene_/, "", $14);
-   gsub(/gene_/, "", $15);
-   print b[$14], c[$14], d[$14], a[$14];
-   print b[$15], c[$15], d[$15], a[$15];
+   if(a[$14]!=""){
+    print b[$14], c[$14], d[$14], a[$14], "occurence="$1;
+   };
   };
-}' $UCSCLOOKUP "$1" | awk '!a[$0]++' | grep -v $FILTER
+ if($15~/gene/){
+  gsub(/gene_/, "", $15);
+  if(a[$15]!=""){
+   print b[$15], c[$15], d[$15], a[$15], "occurence="$1;
+  };
+ };
+}' $UCSCLOOKUP "$1" | awk '!a[$4]++' | grep -v $FILTER
