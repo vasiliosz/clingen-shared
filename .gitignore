@@ -1,4 +1,4 @@
-*.png
+circos/*/*.png
 circos/circos-synall1/
 *.html
 *.zip
