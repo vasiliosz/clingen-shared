@@ -1,11 +1,6 @@
----
-title: 'How to: scatterplot by category with mean and SD shown (ggplot2)'
-author: "Bianca Tesi"
-date: "26 Oct 2014"
-output:
-  html_document:
-    keep_md: yes
----
+# How to: scatterplot by category with mean and SD shown (ggplot2)
+Bianca Tesi  
+26 Oct 2014  
 
 How to: \
 1. make a scatteplot for different categories (sometimes it is better than a box plot) \
@@ -20,7 +15,8 @@ My use case was to plot the level of NK cells cytotoxic activity in two group of
 With few data points and different number of individuals per group, I think the "categorical scatterplot" is more informative than a box plot or bar plot. 
 
 
-```{r}
+
+```r
 library(ggplot2)
 #Found here:http://sharpstatistics.co.uk/r/ggplot2-guide/
 
@@ -38,19 +34,21 @@ g = g + geom_jitter(position=position_jitter(width=0.25))
 g = g + stat_summary(fun.data = "myFunc", geom = "errorbar", width = 0.5, size=0.5) 
 g = g + stat_summary(fun.y=mean,fun.ymin = mean, fun.ymax = mean, geom="crossbar", size = 0.3, width=0.5) 
 g
-
-
 ```
+
+![](categorical_scatterplot_errorbars_ggplot2_files/figure-html/unnamed-chunk-1-1.png) 
 
 If you'd like to display a different order than the one default:
 
-```{r}
+
+```r
 g <- ggplot(iris, aes(factor((Species),levels=c("versicolor", "virginica", "setosa")), Sepal.Length)) + xlab("Groups") + ylab("Value")
 g = g + geom_jitter(position=position_jitter(width=0.25))  
 g = g + stat_summary(fun.data = "myFunc", geom = "errorbar", width = 0.5, size=0.5) 
 g = g + stat_summary(fun.y=mean,fun.ymin = mean, fun.ymax = mean, geom="crossbar", size = 0.3, width=0.5) 
 g
-
 ```
+
+![](categorical_scatterplot_errorbars_ggplot2_files/figure-html/unnamed-chunk-2-1.png) 
 
 

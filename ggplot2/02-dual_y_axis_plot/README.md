@@ -1,11 +1,6 @@
----
-title: 'How to: plot with dual y axes (ggplot2)'
-author: "Bianca Tesi"
-date: "25 Nov 2014"
-output:
-  html_document:
-    keep_md: yes
----
+# How to: plot with dual y axes (ggplot2)
+Bianca Tesi  
+25 Nov 2014  
 
 How to: \
 1. make a scatteplot for different categories (sometimes it is better than a box plot) \
@@ -20,9 +15,17 @@ My use case was to plot the level of Hemoglobin and Thrombocytes in a patient fo
 
 First a general case use:
 from [http://rpubs.com/kohske/dual_axis_in_ggplot2](http://rpubs.com/kohske/dual_axis_in_ggplot2)
-```{r}
+
+```r
 library(ggplot2)
 library(gtable)
+```
+
+```
+## Loading required package: grid
+```
+
+```r
 library(grid)
 
 grid.newpage()
@@ -53,20 +56,41 @@ g <- gtable_add_grob(g, ax, pp$t, length(g$widths) - 1, pp$b)
 
 # draw it
 grid.draw(g)
-
 ```
+
+![](Dual_y_axis_plot_ggplot2_files/figure-html/unnamed-chunk-1-1.png) 
 
 Now my specific case use. (this will not work unless I provide you with the dataset)\
 Further improvement required: \
 - add legend for lines or y axes label on both side, with text color matching line color \
 
-```{r}
+
+```r
 blod <- read.table("~/Karolinska/Lab/WES/BGI_WES_2014/follow_up/2086/lab_data/Blodstatus_141122", sep="\t", header=T, stringsAsFactors = F , fill=T)
 blod <- blod[,-4]
 blod$Resultat <- as.numeric(sub(",", ".", blod$Resultat, fixed = TRUE))
+```
+
+```
+## Warning: NAs introduced by coercion
+```
+
+```r
 blod$Provtagningstidpunkt <- as.Date(blod$Provtagningstidpunkt,  "%d/%m/%y")
 head(blod)
+```
 
+```
+##   Provtagningstidpunkt Resultat     Enhet   Rapportnamn
+## 1           2014-10-22     3.00  x10(9)/L  B-Leukocyter
+## 2           2014-10-22     3.90 x10(12)/L B-Erytrocyter
+## 3           2014-10-22   116.00       g/L  B-Hemoglobin
+## 4           2014-10-22     0.33     0,33*              
+## 5           2014-10-22    84.00        fL    Erc(B)-MCV
+## 6           2014-10-22    30.00        pg    Erc(B)-MCH
+```
+
+```r
 grid.newpage()
 blod_m1 <- subset(blod, blod$Rapportnamn=="B-Hemoglobin")
 p1 <- ggplot(blod_m1, aes(x=Provtagningstidpunkt, y=Resultat, group=Rapportnamn, color=Rapportnamn)) + geom_line(colour = "grey") + theme_bw() + theme(axis.text=element_text(size=12),axis.title=element_text(size=15,face="bold")) + ylab("Hemoglobin") + xlab("") + geom_vline(xintercept = as.numeric(blod_m1$Provtagningstidpunkt[56]),linetype = "longdash") + geom_text(aes(blod_m1$Provtagningstidpunkt[56], label="HSCT", y=140), colour="black", angle=90, vjust = 1.5, text=element_text(size=3))
@@ -101,11 +125,8 @@ g <- gtable_add_grob(g, ax, pp$t, length(g$widths) - 1, pp$b)
 
 # draw it
 grid.draw(g)
-
-
-
-
-
 ```
+
+![](Dual_y_axis_plot_ggplot2_files/figure-html/unnamed-chunk-2-1.png) 
 
 
