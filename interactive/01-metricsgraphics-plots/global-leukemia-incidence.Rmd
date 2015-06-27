@@ -1,0 +1,65 @@
+---
+title: "Global incidence of childhood leukemia"
+author: "Vasilios Zachariadis"
+date: "2015-06-25"
+---
+
+This is an example of how to create interactive plots in R that can be shared as standalone html documents. 
+
+```{r}
+library(metricsgraphics)
+library(DT)
+library(RColorBrewer)
+```
+
+Read in data from [Howard et al, Cancer 2008](http://onlinelibrary.wiley.com/doi/10.1002/cncr.23205/abstract), table 2. 
+
+```{r}
+dat <- read.table("howard-2008-childhood-cancer-incidence.tsv", sep="\t", header=T, na.strings = ".")
+colnames(dat) <- c("country","cancerIncidence","leukemiaIncidence","nonleukemiaIncidence","gni","ths","u5mr","income","incomeSub")
+```
+
+***
+
+# Leukemia incidence *vs* gross national income
+
+```{r}
+dat %>%
+	mjs_plot(x=gni, y=leukemiaIncidence) %>%
+	mjs_point(color_accessor=incomeSub, 
+						color_type="category", 
+						size_accessor=gni,
+						size_range=c(3, 10),
+						color_range=brewer.pal(n=8, name="Dark2"),
+						least_squares=TRUE) %>%
+	mjs_add_mouseover("function(d, i) {
+                $('{{ID}} svg .mg-active-datapoint')
+										.text(d.point.country + ' (Incidence: ' + d.point.leukemiaIncidence + '; GNI: ' + d.point.gni + ')');
+                 }") %>%
+	mjs_labs(x="Gross National Income (USD)", y="Leukemia Incidence (per million, per year)") %>%
+	mjs_axis_x(xax_format = 'comma', xax_count=15)
+```
+
+# Leukemia incidence *vs* Under 5-year mortality rate
+
+```{r}
+dat %>%
+	mjs_plot(x=u5mr, y=leukemiaIncidence) %>%
+	mjs_point(color_accessor=incomeSub, 
+						color_type="category", 
+						size_accessor=gni,
+						size_range=c(3, 10),
+						color_range=brewer.pal(n=8, name="Dark2")) %>%
+	mjs_add_mouseover("function(d, i) {
+                $('{{ID}} svg .mg-active-datapoint')
+										.text(d.point.country + ' (Incidence: ' + d.point.leukemiaIncidence + '; 5YMR: ' + d.point.u5mr + ')');
+                 }") %>%
+	mjs_labs(x="Under 5-year mortality rate", y="Leukemia Incidence (per million, per year)") %>%
+	mjs_axis_x(xax_format = 'comma', xax_count=15)
+```
+
+***
+
+# Overview table
+```{r, results='asis', tidy=TRUE}
+datatable(dat, class="hover stripe compact")
