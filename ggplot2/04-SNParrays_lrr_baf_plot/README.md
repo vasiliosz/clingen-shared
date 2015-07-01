@@ -12,6 +12,7 @@ library(scales)
 library(grid)
 library(plyr)
 library(data.table)
+source("format_si.R") #from http://www.moeding.net/archives/32-Metric-prefixes-for-ggplot2-scales.html (Update version of  2012-03-21)
 ```
 
 PLOT OUTPUT FROM ```taps_plot()``` (can be adjusted for plotting output from ```taps_call()```). For a specific sample and chromosome. Should be possible also to iterate through all samples in the folder.
@@ -31,7 +32,7 @@ Variables to be set:
 taps_path <- "/Users/Bianca/Karolinska/Lab/WES/BGI_WES_2014/follow_up/1471/SNParrays_A393sister/A393sis"
 chr <- "chr9" # Select a chromosome to plot. TODO(VZ): Select specific coordinates
 plot_samples <- NA # Select which samples to plot; NA will plot all in TAPS folder
-plot_flipped <- TRUE
+plot_flipped <- FALSE
 file_ext <- "png"
 
 combined_log2_baf <- TRUE
@@ -69,7 +70,11 @@ if(exists("plot_samples") & !is.na(plot_samples)){
 }
 ```
 
+
 The actual code for plotting
+
+
+
 
 
 ```r
@@ -89,7 +94,7 @@ if(!plot_flipped){
           panel.margin = unit(1, "lines"),
           strip.text=element_text(size=14)) +
     geom_hline(data=hlines.df, aes(yintercept=y), linetype=2, size=1, color="grey") +
-    scale_x_continuous(labels=comma, breaks=pretty_breaks(n=10), expand=c(0.05,0.05)) +
+    scale_x_continuous(labels=format_si(), breaks=pretty_breaks(n=10), expand=c(0.05,0.05)) +
     facet_grid(type~., scales="free_y")
 } else {
   # Plot vertical/long lineup instead
@@ -107,7 +112,7 @@ if(!plot_flipped){
           panel.margin = unit(1, "lines"),
           strip.text=element_text(size=14)) +
     geom_vline(data=vlines.df, aes(xintercept=x), linetype=2, size=1, color="grey") +
-    scale_y_reverse(labels=comma, breaks=pretty_breaks(n=10), expand=c(0.05,0.05)) +
+    scale_y_reverse(labels=format_si(), breaks=pretty_breaks(n=10), expand=c(0.05,0.05)) +
     facet_grid(.~type, scale="free")
 }  
 
