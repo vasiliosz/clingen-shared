@@ -19,15 +19,15 @@ Set parameters:
 * GeneID from Ensembl
 * Your SNP position (chr and position)
 
-```{r}
-ensid <- "ENSG00000185811.12"
+```{r settings}
+ensid <- "ENSG00000185811"
 chr <- 7
 position <- 50470604
 ```
 
 Set public data URLs and read metadata
 
-```{r}
+```{r urls}
 # File URLs
 metadata <- "http://www.ebi.ac.uk/arrayexpress/files/E-GEUV-1/E-GEUV-1.sdrf.txt"
 counts.url <- "http://www.ebi.ac.uk/arrayexpress/files/E-GEUV-1/GD462.GeneQuantRPKM.50FN.samplename.resk10.txt.gz"
@@ -36,7 +36,7 @@ met <- read.table(metadata, header=T, sep="\t")
 
 Use tabix to get genotypes from 1000G (you need`tabix` in your PATH to be able to run this)
 
-```{r}
+```{r get genotypes}
 gtsfile <- tempfile()
 cmd <- paste("tabix -h ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp//release/20130502/ALL.chr",chr,".phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz ",chr,":",position-1,"-",position," | grep -v ^## > ",gtsfile,sep="")
 try(system(cmd))
@@ -47,15 +47,17 @@ Load the table and convert genotypes to text
 ```{r}
 dat <- read.table(gtsfile, sep="\t", 
 									comment.char = "", header=T, check.names = F, colClasses = "character")
+if(nrow(dat)>1) dat <- dat[dat$POS==position,]
 dat <- dat[,-c(1:9)]
-dat <- data.frame("Genotype"=t(dat))
+dat <- as.data.frame(t(dat))
+colnames(dat) <- "Genotype"
 dat$Genotype <- ifelse(dat$Genotype=="0|0", "HOM_REF", 
 								 ifelse(dat$Genotype=="0|1" | dat$Genotype=="1|0", "HET", "HOM_ALT"))
 ```
 
 Download and read Geuvadis gene quantification table (or load from Rds file if run before)
 
-```{r}
+```{r get counts}
 if(!file.exists("GD462.GeneQuantRPKM.Rds")) {
 	counts.file <- tempfile(fileext = ".txt.gz")
 	download.file(url=counts.url, destfile=counts.file)
@@ -95,8 +97,8 @@ Finally, plot the genotype vs expression
 
 ```{r}
 p <- ggplot(dat, aes_string("Genotype", ensid)) +
-	geom_boxplot() +
-	geom_jitter(position = position_jitter(width=.2)) +
+	geom_boxplot(outlier.size=0) +
+	geom_jitter(position = position_jitter(width=.2), pch=21) +
 	ggtitle(paste(chr,":",position," vs expression of ",ensid,sep="")) +
 	ylab("Expression (RPKM)") +
 	theme_few()
@@ -105,7 +107,7 @@ p
 
 You can also plot by population
 ```{r}
-p + facet_wrap(~Population)
+p + facet_wrap(~Population, scales="free_y")
 ```
 
 Before we can test for genotype - expression correlations, we have to check if the expression data follows a normal distribution. One way of doing this is by QQ-plots.
@@ -126,5 +128,8 @@ kt.pval <- c("All"=kruskal.test(dat$Genotype ~ dat[,3])$p.value, kt.pval)
 print(kt.pval)
 ```
 
+```{r}
+anova(lm(dat[,3]~dat$Genotype))
+```
 
 

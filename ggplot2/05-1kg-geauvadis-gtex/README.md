@@ -17,7 +17,7 @@ Set parameters:
 
 
 ```r
-ensid <- "ENSG00000185811.12"
+ensid <- "ENSG00000185811"
 chr <- 7
 position <- 50470604
 ```
@@ -47,8 +47,10 @@ Load the table and convert genotypes to text
 ```r
 dat <- read.table(gtsfile, sep="\t", 
 									comment.char = "", header=T, check.names = F, colClasses = "character")
+if(nrow(dat)>1) dat <- dat[dat$POS==position,]
 dat <- dat[,-c(1:9)]
-dat <- data.frame("Genotype"=t(dat))
+dat <- as.data.frame(t(dat))
+colnames(dat) <- "Genotype"
 dat$Genotype <- ifelse(dat$Genotype=="0|0", "HOM_REF", 
 								 ifelse(dat$Genotype=="0|1" | dat$Genotype=="1|0", "HET", "HOM_ALT"))
 ```
@@ -100,23 +102,23 @@ Finally, plot the genotype vs expression
 
 ```r
 p <- ggplot(dat, aes_string("Genotype", ensid)) +
-	geom_boxplot() +
-	geom_jitter(position = position_jitter(width=.2)) +
+	geom_boxplot(outlier.size=0) +
+	geom_jitter(position = position_jitter(width=.2), pch=21) +
 	ggtitle(paste(chr,":",position," vs expression of ",ensid,sep="")) +
 	ylab("Expression (RPKM)") +
 	theme_few()
 p
 ```
 
-![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-9-1.png) 
+![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-5-1.png) 
 
 You can also plot by population
 
 ```r
-p + facet_wrap(~Population)
+p + facet_wrap(~Population, scales="free_y")
 ```
 
-![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-10-1.png) 
+![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-6-1.png) 
 
 Before we can test for genotype - expression correlations, we have to check if the expression data follows a normal distribution. One way of doing this is by QQ-plots.
 
@@ -126,7 +128,7 @@ qqnorm(dat[,3])
 qqline(dat[,3], col=2,lwd=2,lty=2)
 ```
 
-![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-11-1.png) 
+![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-7-1.png) 
 
 Do a non-parametric association analysis (Kruskal-Wallis Rank Sum test), with the null hypothesis being that there is no gene expression difference between the genotype groups. We do it both for the cohort as a whole, and for each individual population. 
 
@@ -145,5 +147,18 @@ print(kt.pval)
 ## 0.4910747 0.4799500 0.4802833 0.4795992 0.4801741 0.4797181
 ```
 
+
+```r
+anova(lm(dat[,3]~dat$Genotype))
+```
+
+```
+## Analysis of Variance Table
+## 
+## Response: dat[, 3]
+##               Df  Sum Sq Mean Sq F value Pr(>F)
+## dat$Genotype   2    49.1  24.557  0.5254 0.5917
+## Residuals    442 20658.1  46.738
+```
 
 
