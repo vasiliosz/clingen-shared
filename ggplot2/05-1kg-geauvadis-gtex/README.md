@@ -117,3 +117,33 @@ p + facet_wrap(~Population)
 ```
 
 ![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-10-1.png) 
+
+Before we can test for genotype - expression correlations, we have to check if the expression data follows a normal distribution. One way of doing this is by QQ-plots.
+
+
+```r
+qqnorm(dat[,3])
+qqline(dat[,3], col=2,lwd=2,lty=2)
+```
+
+![](1kg-geuvadis-custom-eqtl_files/figure-html/unnamed-chunk-11-1.png) 
+
+Do a non-parametric association analysis (Kruskal-Wallis Rank Sum test), with the null hypothesis being that there is no gene expression difference between the genotype groups. We do it both for the cohort as a whole, and for each individual population. 
+
+
+```r
+kt.pval <- unlist(lapply(levels(dat$Population), function(x){
+	kruskal.test(dat$Genotype[dat$Population==x] ~ dat[dat$Population==x,3])$p.value
+}))
+names(kt.pval) <- levels(dat$Population)
+kt.pval <- c("All"=kruskal.test(dat$Genotype ~ dat[,3])$p.value, kt.pval)
+print(kt.pval)
+```
+
+```
+##       All       CEU       FIN       GBR       TSI       YRI 
+## 0.4910747 0.4799500 0.4802833 0.4795992 0.4801741 0.4797181
+```
+
+
+
