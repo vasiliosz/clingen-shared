@@ -1,5 +1,7 @@
 circos/*/*.png
 circos/circos-synall1/
+circos/circos-ksall/
+circos/circos-t914/
 *.html
 *.zip
 circos/circos-matepair-fusions/circos-matepair/data/annotation/
@@ -14,3 +16,5 @@ circos/circos-matepair-fusions/csvlists-leukemia/
 *.xls
 *.xlsx
 *.circos
+*.Rds
+*.tbi
