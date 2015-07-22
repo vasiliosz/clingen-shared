@@ -1,4 +1,0 @@
-#hs8	68334360	68658620	CPA6	color=purple
-#hs12	6976283	6980112	TPI1	color=purple 
-hs15	74287014	74340153	PML color=purple
-hs17	38465444	38513094	RARA	color=purple
