@@ -8,7 +8,7 @@ circos/circos-matepair-fusions/circos-matepair/data/annotation/
 circos/circos-matepair-fusions/circos-matepair/data/fusion/
 circos/circos-matepair-fusions/circos-matepair/data/cnv/
 circos/circos-matepair-fusions/csvlists-leukemia/
-*.png
+circos/*.png
 *.csv
 *.txt
 *.svg
