@@ -1,6 +1,6 @@
 ---
 title: "SNParrays_lrr_baf_plot"
-author: "Bianca Tesi"
+author: "Bianca Tesi and Vasilios Zachariadis"
 date: "1 Jul 2015"
 output:
   html_document:
